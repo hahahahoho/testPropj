@@ -11,6 +11,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 ///////////////////////udp 통신 적용////////////////////////////////////
 const udp_port = 8001;
+
 var dgram = require('dgram');
 var udp_server = dgram.createSocket('udp4');
 udp_server.on('listening', function(){
@@ -20,7 +21,7 @@ udp_server.on('listening', function(){
 udp_server.on('message', function(msg, remote){
     console.log(remote.address + ':' + remote.port + ' - ' + msg);
 })
-udp_server.bind('127.0.0.1', udp_port);
+udp_server.bind(udp_port,"127.0.0.1");
 ///////////////////////통신 적용 끝////////////////////////////////////
 
 function normalizePort(val) {
