@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>chnnel</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js" type="application/javascript"></script>
+    <script>        
+        $(function(){
+            var socket = io('/');
+            var entryObj = {};
+            var chatInfo = {};
+            //서버로부터 받는 메시지 이벤트들
+            socket.on('roomChatMsg', function(data){
+                $("#messages").append($("<li style='text-align:right'>").text(data.name+" : "+data.value));  
+                $('#scroll_posi').scrollTop($('#scroll_posi')[0].scrollHeight);
+            });
+            socket.on('roomExitMsg', function(data){
+                $("#messages").append($("<li style='color:blue'>").text(data));
+            });
+            socket.on('roomEntryMsg', function(data){
+                $("#messages").append($("<li style='color:blue'>").text(data));
+            });
+            socket.on('getAdminMsg', function(data){  
+                console.log('출력')
+                $("#messages").append($("<li style='color:#e91e63'>").text("[공지사항] "+data.name+" : "+data.title));
+                $("#messages").append($("<li class='notice' style='color:#524b4d'>").text("내용 : "+data.contents));
+            });
+            socket.on('postData', function(data){  
+                console.log(data);
+                var result = JSON.stringify(data);
+                $('#test').append('<li>'+result+'</li>');
+            });
+        })
+    </script>
+  </head>
+  <body>
+    <div class="menu">
+       소켓연결을 해보자
+       <ul id="test">
+
+       </ul>
+    </div>
+  </body>
+</html>
