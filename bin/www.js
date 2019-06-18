@@ -20,7 +20,7 @@ udp_server.on('listening', function(){
 udp_server.on('message', function(msg, remote){
     console.log(remote.address + ':' + remote.port + ' - ' + msg);
 })
-udp_server.bind()
+udp_server.bind('127.0.0.1', udp_port);
 ///////////////////////통신 적용 끝////////////////////////////////////
 
 function normalizePort(val) {
