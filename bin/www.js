@@ -2,16 +2,15 @@ const app = require('../app');
 const debug = require('debug');
 ///////////////////////http 통신 적용////////////////////////////////////
 const http = require('http');
-const port = normalizePort(process.env.PORT || '65080');
+const port = normalizePort(process.env.PORT || '8003');
 //const port = 65080;
+console.log(port);
 app.set('port', port);
 const server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 ///////////////////////udp 통신 적용////////////////////////////////////
-const udp_port = 8001;
-
 var dgram = require('dgram');
 var udp_server = dgram.createSocket('udp4');
 udp_server.on('listening', function(){
@@ -21,7 +20,32 @@ udp_server.on('listening', function(){
 udp_server.on('message', function(msg, remote){
     console.log(remote.address + ':' + remote.port + ' - ' + msg);
 })
-udp_server.bind(udp_port,"127.0.0.1");
+udp_server.bind(8001,"localhost");
+///////////////////////udp 통신 적용////////////////////////////////////
+var net = require('net');
+var tcp_server = net.createServer(function(client){
+    console.log('client connection');
+    client.setTimeout(1000);
+    client.setEncoding('utf8');
+    client.on('data', function(data){
+        console.log('received' + data.toString());
+    })
+    client.on('end', function(){
+        console.log('client disconnected');
+        tcp_server.getConnections(function(err, count){
+            console.log('남아있는 클라이언트 수 :' + count)
+        })
+    })
+})
+tcp_server.listen(8002, 'localhost', function(){
+    console.log('server listening');
+    server.on('close', function(){
+        console.log('서버 끝');
+    })
+    server.on('error', function(err){
+        console.log('Server Error: ', JSON.stringify(err));
+    });
+})
 ///////////////////////통신 적용 끝////////////////////////////////////
 
 function normalizePort(val) {
