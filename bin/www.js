@@ -19,7 +19,7 @@ var httpServer =http.createServer(app).listen(8000, "127.0.0.1", function(req,re
     console.log('Socket IO server has been started');
   });
 var io = require('socket.io').listen(httpServer);
-io.on('connection', function(socket){
+io.on('connection',  function(socket){
     console.log('소켓연결');
 });
 var indexRouter = require('../routes/index');
