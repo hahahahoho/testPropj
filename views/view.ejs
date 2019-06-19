@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>chnnel</title>
+    <link href="./stylesheets/tabulator/tabulator.min.css" rel="stylesheet">
+    <link href="/stylesheets/tabulator/bootstrap/tabulator_bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js" type="application/javascript"></script>
+    <script type="text/javascript" src="/javascripts/tabulator/tabulator.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>        
+        $(function(){
+            var socket = io('/');
+            var entryObj = {};
+            var chatInfo = {};
+            /////////Socket 입니다.  ////// 서버로부터 받는 메시지 이벤트들
+            socket.on('roomChatMsg', function(data){
+                $("#messages").append($("<li style='text-align:right'>").text(data.name+" : "+data.value));  
+                $('#scroll_posi').scrollTop($('#scroll_posi')[0].scrollHeight);
+            });
+            socket.on('roomExitMsg', function(data){
+                $("#messages").append($("<li style='color:blue'>").text(data));
+            });
+            socket.on('roomEntryMsg', function(data){
+                $("#messages").append($("<li style='color:blue'>").text(data));
+            });
+            socket.on('getAdminMsg', function(data){  
+                console.log('출력')
+                $("#messages").append($("<li style='color:#e91e63'>").text("[공지사항] "+data.name+" : "+data.title));
+                $("#messages").append($("<li class='notice' style='color:#524b4d'>").text("내용 : "+data.contents));
+            });
+            socket.on('postData', function(data){  
+                console.log(data);
+                var result = JSON.stringify(data);
+                $('#test').append('<li>'+result+'</li>');
+            });
+            socket.on('getDate', function(data){  
+                var result = JSON.stringify(data);
+                alert(result);
+            });
+
+            /////////Socket 입니다.  ////// 서버로부터 받는 메시지 이벤트들
+
+            startAlert = function() {
+                playAlert = setInterval(function() {
+                    table.addData([{id:1, name:"bob", progress:8, location:"Korea", gender:"male", rating:2, col:"red", dob:"22/04/1994",  car: 1,
+                        lucky_no: 5, lorem: "Lorem ipsum dolor sit amet, elit consectetur adipisicing "}], true);
+                }, 3000);
+            };
+
+            stopAlert = function() {
+                clearInterval(playAlert);
+            };
+            
+            document.getElementById("reactivity-add").addEventListener("click", function(){
+            table.addData([{id:1, name:"bob", progress:8, location:"Korea", gender:"male", rating:2, col:"red", dob:"22/04/1994",  car: 1,
+                lucky_no: 5, lorem: "Lorem ipsum dolor sit amet, elit consectetur adipisicing "}], true);
+            });
+            var tabledata = [
+                {
+                    "id": 1,
+                    "name": "Oli Bob",
+                    "progress": 12,
+                    "location": "United Kingdom",
+                    "gender": "male",
+                    "rating": 6,
+                    "col": "red",
+                    "dob": "14/04/1984",
+                    "car": 1,
+                    "lucky_no": 5,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                },
+                {
+                    "id": 2,
+                    "name": "Mary May",
+                    "progress": 1,
+                    "location": "Germany",
+                    "gender": "female",
+                    "rating": 2,
+                    "col": "blue",
+                    "dob": "14/05/1982",
+                    "car": true,
+                    "lucky_no": 10,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                },
+                {
+                    "id": 3,
+                    "name": "Christine Lobowski",
+                    "progress": 42,
+                    "location": "France",
+                    "gender": "female",
+                    "rating": 0,
+                    "col": "green",
+                    "dob": "22/05/1982",
+                    "car": "true",
+                    "lucky_no": 12,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                },
+                {
+                    "id": 4,
+                    "name": "Brendon Philips",
+                    "progress": 100,
+                    "location": "USA",
+                    "gender": "male",
+                    "rating": 1,
+                    "col": "orange",
+                    "dob": "01/08/1980",
+                    "car": false,
+                    "lucky_no": 18,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                },
+                {
+                    "id": 5,
+                    "name": "Margret Marmajuke",
+                    "progress": 16,
+                    "location": "Canada",
+                    "gender": "female",
+                    "rating": 5,
+                    "col": "yellow",
+                    "dob": "31/01/1999",
+                    "car": false,
+                    "lucky_no": 33,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                },
+                {
+                    "id": 6,
+                    "name": "Frank Harbours",
+                    "progress": 38,
+                    "location": "Russia",
+                    "gender": "male",
+                    "rating": 4,
+                    "col": "red",
+                    "dob": "12/05/1966",
+                    "car": 1,
+                    "lucky_no": 2,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                },
+                {
+                    "id": 7,
+                    "name": "Jamie Newhart",
+                    "progress": 23,
+                    "location": "India",
+                    "gender": "male",
+                    "rating": 3,
+                    "col": "green",
+                    "dob": "14/05/1985",
+                    "car": true,
+                    "lucky_no": 63,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                },
+                {
+                    "id": 8,
+                    "name": "Gemma Jane",
+                    "progress": 60,
+                    "location": "China",
+                    "gender": "female",
+                    "rating": 0,
+                    "col": "red",
+                    "dob": "22/05/1982",
+                    "car": "true",
+                    "lucky_no": 72,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                },
+                {
+                    "id": 9,
+                    "name": "Emily Sykes",
+                    "progress": 42,
+                    "location": "South Korea",
+                    "gender": "female",
+                    "rating": 1,
+                    "col": "maroon",
+                    "dob": "11/11/1970",
+                    "car": false,
+                    "lucky_no": 44,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                },
+                {
+                    "id": 10,
+                    "name": "James Newman",
+                    "progress": 73,
+                    "location": "Japan",
+                    "gender": "male",
+                    "rating": 5,
+                    "col": "red",
+                    "dob": "22/03/1998",
+                    "car": false,
+                    "lucky_no": 9,
+                    "lorem": "Lorem ipsum dolor sit amet, elit consectetur adipisicing "
+                }
+            ]
+            //Build Tabulator
+            var table = new Tabulator("#example-table", {
+                height:"100%",
+                layout:"fitColumns",
+                addRowPos:"bottom",
+                scrollToRowPosition:"bottom",
+                reactiveData:true, //turn on data reactivity
+                data:tabledata,
+                columns:[
+                    {title:"Name", field:"name", width:200},
+                    {title:"Progress", field:"progress", formatter:"progress", sorter:"number"},
+                    {title:"Gender", field:"gender"},
+                    {title:"Rating", field:"rating", formatter:"star", align:"center", width:100},
+                    {title:"Favourite Color", field:"col"},
+                    {title:"Date Of Birth", field:"dob", align:"center", sorter:"date"},
+                    {title:"Driver", field:"car", align:"center", formatter:"tickCross"},
+                ],
+            });
+            $("#tabulator-controls input[name=name]").on("keyup", function(){
+                table.setFilter( "name", "like", $(this).val())
+            });
+            $("#tabulator-controls  button[name=download]").on("click", function(){
+                table.download("csv", "Tabulator Example Download.csv");
+            });
+            $("#tabulator-controls  button[name=hide-col]").on("click", function(){
+                $(this).toggleClass("col-hide");
+                if(!$(this).hasClass("col-hide")){
+                    table.showColumn("rating");
+                }else{
+                    table.hideColumn("rating");
+                }
+            });
+            table.scrollToRow(10, "bottom", true);
+        })
+    </script>
+  </head>
+  <body>
+    <button onclick="startAlert();">setInterval()</button>
+    <button onclick="stopAlert();">clearInterval()</button>
+    <div id="tabulator-controls" class="table-controls  hidden-xs">
+        <i class="fa fa-filter fa-fw"></i> <input id="filter" name="name" type="text" placeholder="Filter Table By Name">
+        <button class="btn btn-primary" name="download"><i class="fa fa-download"></i> Download Data as CSV</button>
+        <button class="btn btn-primary" name="hide-col" class="col-hide"><span class="hide-rating"><i class="fa fa-eye-slash"></i> Hide /Show Rating Column</span></button>
+        <button class="btn btn-primary" name="undo"><i class="fa fa-undo"></i> Undo Edit</button>
+        <button id="reactivity-add" class="btn btn-primary" name="add-row"><i class="fa fa-plus"></i> Add Row</button>
+    </div>
+    <div style="height:800px;">
+        <div id="example-table"></div>
+    </div>
+  </body>
+</html>

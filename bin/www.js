@@ -1,16 +1,21 @@
 //const app = require('../app');
 const debug = require('debug');
 const http = require('http');
+const https = require('https');
+const request = require('request');
+const fs = require('fs');
+const bodyParser = require('body-parser')
 var express = require('express');
 var path = require('path');
 var app = express();
 app.set('views', path.join(__dirname,'..', 'views'));
 app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, '..', 'public')));
-var bodyParser = require('body-parser');                                                                     
+app.use(express.static(path.join(__dirname, '..', 'public')));                                                                   
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-var httpServer =http.createServer(app).listen(8333, "127.0.0.1", function(req,res){
+
+///////////////////////http 통신 적용////////////////////////////////////
+var httpServer =http.createServer(app).listen(8000, "127.0.0.1", function(req,res){
     console.log('Socket IO server has been started');
   });
 var io = require('socket.io').listen(httpServer);
@@ -24,31 +29,33 @@ app.use(function(req, res, next){
     next();
 })
 app.use('/', indexRouter);
-///////////////////////http 통신 적용////////////////////////////////////
+
+///////////////////////https 통신 적용////////////////////////////////////
+const options = {
+    key: fs.readFileSync('C:/Users/haha/Desktop/opensslkey/private-key.pem'),
+    cert: fs.readFileSync('C:/Users/haha/Desktop/opensslkey/public-cert.pem')
+};
+https.createServer(options, app).listen(8001,'127.0.0.1');
+
 
 const port = normalizePort(process.env.PORT || '8003');
 //const port = 65080;
 
 
-///////////////////////udp 통신 적용////////////////////////////////////
-var dgram = require('dgram');
-var udp_server = dgram.createSocket('udp4');
-udp_server.on('listening', function(){
-    var addr = udp_server.address();
-    console.log('UDP Server listening port :' + addr.port);
-});
-udp_server.on('message', function(msg, remote){
-    console.log(remote.address + ':' + remote.port + ' - ' + msg);
-})
-udp_server.bind(8001,"localhost");
-
 ///////////////////////tcp 통신 적용////////////////////////////////////
 var net = require('net');
 var tcp_server = net.createServer(function(client){
     console.log('client connection');
-    client.setTimeout(1000);
+    client.setTimeout(30000);
     client.setEncoding('utf8');
     client.on('data', function(data){
+        request.post({
+            headers : {'content-type' : 'application/json'},
+            url : 'http://127.0.0.1:8000',
+            body : '{"test" : "tcpTest"}',
+        }, function(error, response, body){
+            console.log(body);
+        })
         console.log('received' + data.toString());
     })
     client.on('end', function(){
@@ -58,7 +65,7 @@ var tcp_server = net.createServer(function(client){
         })
     })
 })
-tcp_server.listen(8002, 'localhost', function(){
+tcp_server.listen(8002, '127.0.0.1', function(){
     console.log('server listening');
     tcp_server.on('close', function(){
         console.log('서버 끝');
@@ -67,6 +74,25 @@ tcp_server.listen(8002, 'localhost', function(){
         console.log('Server Error: ', JSON.stringify(err));
     });
 })
+///////////////////////udp 통신 적용////////////////////////////////////
+var dgram = require('dgram');
+var udp_server = dgram.createSocket('udp4');
+udp_server.on('listening', function(){
+    var addr = udp_server.address();
+    console.log('UDP Server listening port :' + addr.port);
+});
+udp_server.on('message', function(msg, remote){
+    console.log(remote.address + ':' + remote.port + ' - ' + msg);
+    request.post({
+        headers : {'content-type' : 'application/json'},
+        url : 'http://127.0.0.1:8000',
+        body : '{"test" : "tcpTest"}',
+    }, function(error, response, body){
+        console.log(body);
+    })
+})
+udp_server.bind(8003,"127.0.0.1");
+
 ///////////////////////통신 적용 끝////////////////////////////////////
 
 function normalizePort(val) {

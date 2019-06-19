@@ -34,8 +34,4 @@ function writeData(socket, data){
   }
 }
 var Dwarves = getConnection("Dwarves");
-var Elves = getConnection("Elves");
-var Hobbits = getConnection("Hobbits");
 writeData(Dwarves, "More Axes");
-writeData(Elves, "More Arrows");
-writeData(Hobbits, "More Pipe Weed");
